@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="microsoft.entityframeworkcore" Version="5.0" />
+    <PackageReference Include="microsoft.entityframeworkcore.sqlserver" Version="5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
