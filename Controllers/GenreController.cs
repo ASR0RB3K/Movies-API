@@ -60,6 +60,18 @@ namespace movies.Controllers
         public async Task<IActionResult> GetAsync()
             => Ok(await _genreService.GetAllAsync());
 
-        // TODO: Delete
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute]Guid id)
+        {
+            var deleteResult = await _genreService.DeleteGenreAsync(id);
+
+            if(deleteResult.IsSuccess)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
     }
 }

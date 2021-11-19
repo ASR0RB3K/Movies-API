@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -51,6 +52,33 @@ public class GenreService : IGenreService
             }
             catch(Exception e)
             {
+                return (false, e);
+            }
+        }
+
+        public async Task<(bool IsSuccess, Exception exception)> DeleteGenreAsync(Guid id)
+        {
+            try
+            {
+                if (await _ctx.Genres.AnyAsync(p => p.Id == id))
+                {
+                    _ctx.Genres.Remove(_ctx.Genres.FirstOrDefault(p => p.Id == id));
+                    await _ctx.SaveChangesAsync();
+
+                    _logger.LogInformation($"Genre removed from database: {id}");
+
+                    return (true, null);
+                }
+
+                 else
+                {
+                    return (false, null);
+                }
+            }
+
+            catch (Exception e)
+            {
+                _logger.LogInformation($"Deleting genre from database: {id} failed\n{e.Message}", e);
                 return (false, e);
             }
         }
