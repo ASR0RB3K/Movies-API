@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using movies.Data;
+using movies.Services;
 
 namespace movies
 {
@@ -29,6 +30,9 @@ namespace movies
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "movies", Version = "v1" });
             });
+            services.AddTransient<IGenreService, GenreService>();
+            services.AddTransient<IActorService, ActorService>();
+            services.AddTransient<IMovieService, MovieService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

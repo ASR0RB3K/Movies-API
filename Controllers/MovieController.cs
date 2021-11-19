@@ -63,7 +63,7 @@ namespace movies.Controllers
         {
             JsonSerializerOptions options = new()
             {
-                // ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                ReferenceHandler = ReferenceHandler.Preserve,
                 WriteIndented = true
             };
 
