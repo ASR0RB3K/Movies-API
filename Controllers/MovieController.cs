@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -69,6 +70,18 @@ namespace movies.Controllers
 
             var json = JsonSerializer.Serialize(await _ms.GetAllAsync(), options);
             return Ok(json);
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetAsync(Guid id)
+        {
+            if(await _ms.ExistsAsync(id))
+            {
+                return Ok(await _ms.GetAsync(id));
+            }
+
+            return NotFound();
         }
     }
 }

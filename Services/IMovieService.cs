@@ -13,7 +13,5 @@ namespace movies.Services
         Task<List<Movie>> GetAllAsync(string title);
         Task<(bool IsSuccess, Exception Exception)> DeleteAsync(Guid id);
         Task<bool> ExistsAsync(Guid id);
-
-        // TODO: Update
     }
 }
