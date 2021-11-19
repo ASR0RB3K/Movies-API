@@ -103,6 +103,33 @@ public class ActorService : IActorService
             }
         }
 
+        public async Task<(bool IsSuccess, Exception exception)> DeleteActorAsync(Guid id)
+        {
+            try
+            {
+                if (await _ctx.Actors.AnyAsync(p => p.Id == id))
+                {
+                    _ctx.Actors.Remove(_ctx.Actors.FirstOrDefault(p => p.Id == id));
+                    await _ctx.SaveChangesAsync();
+
+                    _logger.LogInformation($"Actor removed from database: {id}");
+
+                    return (true, null);
+                }
+
+                 else
+                {
+                    return (false, null);
+                }
+            }
+
+            catch (Exception e)
+            {
+                _logger.LogInformation($"Deleting actor from database: {id} failed\n{e.Message}", e);
+                return (false, e);
+            }
+        }
+
         public Task<bool> ExistsAsync(Guid id)
             => _ctx.Actors.AnyAsync(a => a.Id == id);
 

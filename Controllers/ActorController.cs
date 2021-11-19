@@ -64,5 +64,19 @@ namespace movies.Controllers
 
             return BadRequest();
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute]Guid id)
+        {
+            var deleteResult = await _as.DeleteActorAsync(id);
+
+            if(deleteResult.IsSuccess)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
     }
 }
