@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using movies.Data;
 using movies.Entities;
 
@@ -11,10 +12,12 @@ namespace movies.Services
 public class ActorService : IActorService
 {
         private readonly MoviesContext _ctx;
+        private readonly ILogger<ActorService> _logger;
 
-        public ActorService(MoviesContext context)
+        public ActorService(MoviesContext context, ILogger<ActorService> logger)
         {
             _ctx = context;
+            _logger = logger;
         }
 
         public async Task<(bool IsSuccess, Exception Exception, Actor Actor)> CreateAsync(Actor actor)
@@ -51,6 +54,52 @@ public class ActorService : IActorService
             catch(Exception e)
             {
                 return (false, e);
+            }
+        }
+
+        public async Task<(bool IsSuccess, Exception exception, Actor actorResult)> GetActorIdAsync(Guid Id)
+        {
+            try
+            {
+                var pizzaResult = await _ctx.Actors.AsNoTracking().FirstOrDefaultAsync(p => p.Id == Id);
+
+                if (pizzaResult is default(Actor))
+                {
+                    return (false, null, null);
+                }
+
+                _logger.LogInformation($"Actor recived from database: {Id}");
+                return (true, null, pizzaResult);
+            }
+
+            catch (Exception e)
+            {
+                _logger.LogInformation($"Receiving actor from database: {Id} failed");
+                return (false, e, null);
+            }
+        }
+
+        public async Task<(bool IsSuccess, Exception exception, Actor actor)> UpdatedActorAsync(Guid id, Actor actor)
+        {
+            try
+            {
+                if (await _ctx.Actors.AnyAsync(p => p.Id == id))
+                {
+                    _ctx.Actors.Update(actor);
+                    await _ctx.SaveChangesAsync();
+
+                    _logger.LogInformation($"Actor updated in database: {id}.");
+                    return (true, null, actor);
+                }
+                else
+                {
+                    return (false, new Exception(), null);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation($"Updating with given ID: {id} not found\nError: {e.Message}");
+                return (false, e, null);
             }
         }
 

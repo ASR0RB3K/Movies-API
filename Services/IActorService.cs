@@ -13,7 +13,7 @@ namespace movies.Services
         Task<List<Actor>> GetAllAsync(string fullname);
         Task<(bool IsSuccess, Exception Exception)> DeleteAsync(Guid id);
         Task<bool> ExistsAsync(Guid id);
-
-        // TODO: Update
+        Task<(bool IsSuccess, Exception exception, Actor actorResult)> GetActorIdAsync(Guid Id);
+        Task<(bool IsSuccess, Exception exception, Actor actor)> UpdatedActorAsync(Guid id, Actor actor);
     }
 }

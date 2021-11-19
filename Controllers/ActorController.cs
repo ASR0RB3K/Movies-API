@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using movies.Mappers;
@@ -33,5 +34,35 @@ namespace movies.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
             => Ok(await _as.GetAllAsync());
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetActorIdAsync([FromRoute] Guid id)
+        {
+            var actor = await _as.GetActorIdAsync(id);
+
+            if (actor.IsSuccess)
+            {
+                return Ok(actor.actorResult);
+            }
+
+            return NotFound();
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] NewActor newActor)
+        {
+            var pizzaEntities = newActor.ToEntity(); pizzaEntities.Id = id;
+
+            var updateResult = await _as.UpdatedActorAsync(id, pizzaEntities);
+
+            if (updateResult.IsSuccess)
+            {
+                return Ok(updateResult.actor);
+            }
+
+            return BadRequest();
+        }
     }
 }
