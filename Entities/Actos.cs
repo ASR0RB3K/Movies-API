@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace movies.Entities
 {
@@ -17,6 +18,7 @@ namespace movies.Entities
         [Required]
         public DateTimeOffset Birthdate { get; set; }
         
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public ICollection<Movie> Movies { get; set; }
     }
 }
