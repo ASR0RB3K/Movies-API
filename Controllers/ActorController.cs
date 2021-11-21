@@ -53,9 +53,9 @@ namespace movies.Controllers
         [Route("{id}")]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] NewActor newActor)
         {
-            var pizzaEntities = newActor.ToEntity(); pizzaEntities.Id = id;
+            var actorEntities = newActor.ToEntity(); actorEntities.Id = id;
 
-            var updateResult = await _as.UpdatedActorAsync(id, pizzaEntities);
+            var updateResult = await _as.UpdatedActorAsync(id, actorEntities);
 
             if (updateResult.IsSuccess)
             {

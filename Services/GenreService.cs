@@ -55,7 +55,6 @@ public class GenreService : IGenreService
                 return (false, e);
             }
         }
-
         public async Task<(bool IsSuccess, Exception exception)> DeleteGenreAsync(Guid id)
         {
             try
@@ -82,6 +81,31 @@ public class GenreService : IGenreService
                 return (false, e);
             }
         }
+
+        public async Task<(bool IsSuccess, Exception exception, Genre genre)> UpdatedGenreAsync(Guid id, Genre genre)
+        {
+            try
+            {
+                if (await _ctx.Genres.AnyAsync(p => p.Id == id))
+                {
+                    _ctx.Genres.Update(genre);
+                    await _ctx.SaveChangesAsync();
+
+                    _logger.LogInformation($"Genre updated in database: {id}.");
+                    return (true, null, genre);
+                }
+                else
+                {
+                    return (false, new Exception(), null);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation($"Updating with given ID: {id} not found\nError: {e.Message}");
+                return (false, e, null);
+            }
+        }
+
 
         public Task<bool> ExistsAsync(Guid id)
             => _ctx.Genres.AnyAsync(g => g.Id == id);

@@ -60,6 +60,22 @@ namespace movies.Controllers
         public async Task<IActionResult> GetAsync()
             => Ok(await _genreService.GetAllAsync());
 
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] NewGenre newGenre)
+        {
+            var genreEntities = newGenre.ToEntity(); genreEntities.Id = id;
+
+            var updateResult = await _genreService.UpdatedGenreAsync(id, genreEntities);
+
+            if (updateResult.IsSuccess)
+            {
+                return Ok(updateResult.genre);
+            }
+
+            return BadRequest();
+        }
+
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> DeleteAsync([FromRoute]Guid id)
@@ -73,5 +89,6 @@ namespace movies.Controllers
 
             return BadRequest();
         }
+
     }
 }

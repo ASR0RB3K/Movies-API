@@ -14,5 +14,7 @@ namespace movies.Services
         Task<bool> ExistsAsync(Guid id);
         Task<bool> ExistsAsync(string name);
         Task<(bool IsSuccess, Exception exception)> DeleteGenreAsync(Guid id);
+        Task<(bool IsSuccess, Exception exception, Genre genre)> UpdatedGenreAsync(Guid id, Genre genre);
+
     }
 }
