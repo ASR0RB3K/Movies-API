@@ -83,5 +83,19 @@ namespace movies.Controllers
 
             return NotFound();
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute]Guid id)
+        {
+            var deleteResult = await _ms.DeleteMovieAsync(id);
+
+            if(deleteResult.IsSuccess)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
     }
 }

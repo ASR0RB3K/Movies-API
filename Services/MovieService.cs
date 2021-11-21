@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using movies.Data;
 using movies.Entities;
 
@@ -11,10 +12,12 @@ namespace movies.Services
     public class MovieService : IMovieService
     {
         private readonly MoviesContext _ctx;
+        private readonly ILogger<GenreService> _logger;
 
-        public MovieService(MoviesContext context)
+        public MovieService(MoviesContext context, ILogger<GenreService> logger)
         {
             _ctx = context;
+            _logger = logger;
         }
 
         public async Task<(bool IsSuccess, Exception Exception, Movie Movie)> CreateAsync(Movie movie)
@@ -50,6 +53,33 @@ namespace movies.Services
             }
             catch(Exception e)
             {
+                return (false, e);
+            }
+        }
+
+        public async Task<(bool IsSuccess, Exception exception)> DeleteMovieAsync(Guid id)
+        {
+            try
+            {
+                if (await _ctx.Movies.AnyAsync(p => p.Id == id))
+                {
+                    _ctx.Movies.Remove(_ctx.Movies.FirstOrDefault(p => p.Id == id));
+                    await _ctx.SaveChangesAsync();
+
+                    _logger.LogInformation($"Genre removed from database: {id}");
+
+                    return (true, null);
+                }
+
+                 else
+                {
+                    return (false, null);
+                }
+            }
+
+            catch (Exception e)
+            {
+                _logger.LogInformation($"Deleting genre from database: {id} failed\n{e.Message}", e);
                 return (false, e);
             }
         }
