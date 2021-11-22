@@ -57,6 +57,32 @@ namespace movies.Services
             }
         }
 
+        public async Task<(bool IsSuccess, Exception exception, Movie movie)> UpdatedMovieAsync(Guid id, Movie movie)
+        {
+            try
+            {
+                if (await _ctx.Movies.AnyAsync(p => p.Id == id))
+                {
+                    _ctx.Entry(movie).State = EntityState.Modified;
+            _ctx.SaveChanges();
+            _ctx.Movies.Update(movie);
+            await _ctx.SaveChangesAsync();
+
+                    _logger.LogInformation($"Movie updated in database: {id}.");
+                    return (true, null, movie);
+                }
+                else
+                {
+                    return (false, new Exception(), null);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation($"Updating with given ID: {id} not found\nError: {e.Message}");
+                return (false, e, null);
+            }
+        }
+
         public async Task<(bool IsSuccess, Exception exception)> DeleteMovieAsync(Guid id)
         {
             try

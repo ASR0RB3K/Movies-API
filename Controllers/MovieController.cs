@@ -1,9 +1,12 @@
 using System;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using movies.Entities;
 using movies.Mappers;
 using movies.Models;
 using movies.Services;
@@ -82,6 +85,20 @@ namespace movies.Controllers
             }
 
             return NotFound();
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateMovie([FromRoute]Guid id,[FromBody] Movie movie)
+        {
+            movie.Id = id;
+            var updatedResult = await _ms.UpdatedMovieAsync(id, movie);
+
+            if (updatedResult.IsSuccess)
+            {
+                return Ok();
+            }
+            return BadRequest(updatedResult.exception.Message);
         }
 
         [HttpDelete]
