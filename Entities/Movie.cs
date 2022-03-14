@@ -27,5 +27,6 @@ namespace movies.Entities
         public ICollection<Genre> Genres { get; set; }
 
         public ICollection<Actor> Actors { get; set; }
+        public ICollection<Image> Images { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using movies.Data;
 using movies.Entities;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace movies.Services
 {
@@ -130,5 +131,33 @@ namespace movies.Services
 
         public Task<Movie> GetAsync(Guid id)
             => _ctx.Movies.FirstOrDefaultAsync(a => a.Id == id);
+
+        public async Task<(bool IsSuccess, Exception Exception)> CreateImagesAsync(List<Entities.Image> images)
+        {
+            try
+            {
+                await _ctx.Images.AddRangeAsync(images);
+                await _ctx.SaveChangesAsync();
+
+                return (true, null);
+            }
+            catch(Exception e)
+            {
+                return (false, e);
+            }
+        }
+
+        public Task<Entities.Image> GetImageAsync(Guid id)
+        => _ctx.Images.FirstOrDefaultAsync(i => i.Id == id);
+
+        public Task<List<Entities.Image>> GetImagesAsync(Guid id)
+        => _ctx.Images
+            .AsNoTracking()
+            .Where(i => i.MovieId == id)
+            .ToListAsync();
+
+        public Task<bool> ImageExistsAsync(Guid id)
+        => _ctx.Images.AnyAsync(i => i.Id == id);
+   
     }
 }
